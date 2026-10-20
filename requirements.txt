@@ -1,0 +1,7 @@
+# 核心依赖（Core Dependencies）
+pandas>=2.0
+numpy>=1.24
+pulp==2.7.0        # 混合整数规划求解（经典稳定 API；4.x 的 fromDict 新 API 不兼容本项目写法）
+requests>=2.31     # 高德 API 调用
+matplotlib>=3.7    # 结果可视化
+# 可选：plotly>=5.18  # 交互式覆盖图（notebooks/ 中使用）

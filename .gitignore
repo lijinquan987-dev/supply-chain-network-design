@@ -1,0 +1,29 @@
+# ===== 密钥与敏感信息（安全红线：绝不提交）=====
+.env
+.env.*
+*.key
+*.pem
+*api_key*
+!src/config.py          # 仅允许配置文件本身（内部不写密钥）
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# ===== 数据（原始抓取缓存，可再生成）=====
+data/raw/*.csv.tmp
+data/cache/
+
+# ===== 编辑器 / 系统 =====
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
