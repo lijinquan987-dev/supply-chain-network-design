@@ -2,6 +2,12 @@
 
 **Supply Chain Network Design — Warehouse Network Planning & Optimization**
 
+> ## 🎯 价值主张（Value Proposition）
+>
+> **仓网是拍脑袋定的，还是算出来的？**
+>
+> 本项目用 **337 城 × 15 候选仓** 的选址模型回答「几个仓、放哪里、覆盖谁」——算法 **9 仓方案较直觉 2 仓降本 38.9%**，次日达达成率从 **7.3% 提升至 82.8%**，Excel + Python 双轨求解**交叉验证误差 0.014%**。
+
 > 一个基于 **P-中值选址模型（P-Median Model）** 的全国仓网规划独立研究项目：用 Python + 高德开放数据（AMap API）+ 混合整数规划，量化回答「**几个仓、放哪里、覆盖谁、成本时效怎么权衡**」。
 
 ---
