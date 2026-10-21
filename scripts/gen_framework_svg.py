@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
-"""生成 docs/19plus2-framework.svg —— 19+2 城市群框架长图（上下结构）
-上：交通骨干骨架示意（四极菱形 + 6轴7廊8通道）
+"""生成 docs/19plus2-framework.svg —— 19+2 城市群框架长图（上下结构，官方地图版）
+上：空间骨架 —— 嵌入《国家综合立体交通网骨干网示意图》（官方地图，base64 内嵌，自包含可离线渲染）
 中：三层关系链（337 ⊃ 19+2 ⊃ 15 ⊃ 9）
 下：候选仓映射明细 + 选仓逻辑
 """
+import base64
 from pathlib import Path
 
 W = 1240
 FONT = "'Noto Sans CJK SC','PingFang SC','Microsoft YaHei',sans-serif"
+MAP_PATH = "/home/user/.doubao/agent_mode/workspace/.sessions/38448286510269698/attachments/810c2288cd30bd72a1866cae297b67c1.png"
 
 parts = []
 def add(s): parts.append(s)
@@ -18,69 +20,49 @@ def text(x, y, s, size=14, fill="#0f172a", weight="normal", anchor="start"):
 def rect(x, y, w, h, fill, rx=8, stroke="none", sw=0):
     add(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" fill="{fill}" stroke="{stroke}" stroke-width="{sw}"/>')
 
-# ============ 文档头 ============
-add(f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="1470" viewBox="0 0 {W} 1470" style="background:#f8fafc;">')
+# ============ 文档头（总高 1770） ============
+add(f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="1770" viewBox="0 0 {W} 1770" style="background:#f8fafc;">')
 
 # ============ 标题 ============
 rect(0, 0, W, 92, "#0f172a", rx=0)
 text(W/2, 38, "19+2 城市群框架：从全国需求到仓网骨架", 24, "#ffffff", "bold", "middle")
 text(W/2, 66, "依据《国家综合立体交通网规划纲要》(2021) · 4极 / 8组群 / 9组团 = 21 个空间单元 · 6轴 / 7廊 / 8通道", 13, "#cbd5e1", "normal", "middle")
 
-# ============ 第 1 区：交通骨干骨架示意 ============
-rect(24, 112, W-48, 470, "#ffffff", 12, "#e2e8f0", 1)
-text(44, 148, "① 空间骨架：4 极菱形结构 + 6 轴 / 7 廊 / 8 通道交通骨干（示意，非精确地图）", 17, "#0f172a", "bold")
+# ============ 第 1 区：空间骨架 = 官方骨干网地图 ============
+rect(24, 112, W-48, 908, "#ffffff", 12, "#e2e8f0", 1)
+text(44, 148, "① 空间骨架：国家综合立体交通网骨干网示意图（官方地图）", 17, "#0f172a", "bold")
 
-# 四极菱形示意（左侧）
-cx, cy = 250, 430
-p = {"京津冀": (cx, cy-170), "成渝": (cx-150, cy+40), "粤港澳": (cx-40, cy+150), "长三角": (cx+160, cy-10)}
-# 菱形连线
-add(f'<line x1="{p["京津冀"][0]}" y1="{p["京津冀"][1]}" x2="{p["成渝"][0]}" y2="{p["成渝"][1]}" stroke="#ef4444" stroke-width="3" stroke-dasharray="7,5"/>')
-add(f'<line x1="{p["京津冀"][0]}" y1="{p["京津冀"][1]}" x2="{p["长三角"][0]}" y2="{p["长三角"][1]}" stroke="#ef4444" stroke-width="3" stroke-dasharray="7,5"/>')
-add(f'<line x1="{p["长三角"][0]}" y1="{p["长三角"][1]}" x2="{p["粤港澳"][0]}" y2="{p["粤港澳"][1]}" stroke="#ef4444" stroke-width="3" stroke-dasharray="7,5"/>')
-add(f'<line x1="{p["成渝"][0]}" y1="{p["成渝"][1]}" x2="{p["粤港澳"][0]}" y2="{p["粤港澳"][1]}" stroke="#ef4444" stroke-width="3" stroke-dasharray="7,5"/>')
-# 交叉轴
-add(f'<line x1="{p["京津冀"][0]}" y1="{p["京津冀"][1]}" x2="{p["粤港澳"][0]}" y2="{p["粤港澳"][1]}" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="4,4"/>')
-add(f'<line x1="{p["成渝"][0]}" y1="{p["成渝"][1]}" x2="{p["长三角"][0]}" y2="{p["长三角"][1]}" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="4,4"/>')
-# 极核圆点
-colors = {"京津冀": "#ef4444", "长三角": "#3b82f6", "粤港澳": "#10b981", "成渝": "#8b5cf6"}
-for name, (x, y) in p.items():
-    add(f'<circle cx="{x}" cy="{y}" r="26" fill="{colors[name]}" opacity="0.9"/>')
-    text(x, y-34, name, 14, colors[name], "bold", "middle")
-    add(f'<text x="{x}" y="{y+5}" font-family="{FONT}" font-size="13" fill="#ffffff" text-anchor="middle" font-weight="bold">极</text>')
-# 标注
-text(cx, cy+215, "6 轴（菱形主骨架）· 7 廊（区域走廊）· 8 通道（跨境/沿边）", 13.5, "#334155", "bold", "middle")
+# 官方地图 base64 内嵌（1108×774，宽 1112 → 高 777）
+b64 = base64.b64encode(Path(MAP_PATH).read_bytes()).decode("ascii")
+add(f'<image x="64" y="172" width="1112" height="777" href="data:image/png;base64,{b64}" preserveAspectRatio="xMidYMid meet"/>')
 
-# 右侧：8 组群 + 9 组团
-rx0, ry0 = 560, 178
-rect(rx0, ry0-28, 320, 178, "#fff7ed", 10, "#fdba74", 1)
-text(rx0+16, ry0, "8 组群（区域增长极）", 15, "#c2410c", "bold")
-groups8 = "长江中游 · 山东半岛 · 海峡西岸 · 中原\n哈长 · 辽中南 · 北部湾 · 关中平原"
-for i, line in enumerate(groups8.split("\n")):
-    text(rx0+16, ry0+30+i*22, line, 13, "#431407")
+# 地图下方图例（两行，SVG 元素绘制）
+text(64, 968, "图例：", 13.5, "#334155", "bold")
+lx = 130
+add(f'<circle cx="{lx+6}" cy="963" r="5.5" fill="#ef4444"/>')
+text(lx+18, 968, "4 极（红点）", 13, "#334155")
+lx += 128
+add(f'<circle cx="{lx+6}" cy="963" r="6" fill="none" stroke="#3b82f6" stroke-width="2"/>')
+add(f'<circle cx="{lx+6}" cy="963" r="2.5" fill="#3b82f6"/>')
+text(lx+18, 968, "8 组群（蓝双圈）", 13, "#334155")
+lx += 150
+add(f'<circle cx="{lx+6}" cy="963" r="5.5" fill="#f59e0b"/>')
+text(lx+18, 968, "9 组团（黄橙渐变圆点）", 13, "#334155")
+lx += 172
+add(f'<line x1="{lx}" y1="963" x2="{lx+26}" y2="963" stroke="#f472b6" stroke-width="3"/>')
+text(lx+32, 968, "6 轴（粉）", 13, "#334155")
+lx += 108
+add(f'<line x1="{lx}" y1="963" x2="{lx+26}" y2="963" stroke="#3b82f6" stroke-width="3"/>')
+text(lx+32, 968, "7 廊（蓝）", 13, "#334155")
+lx += 108
+add(f'<line x1="{lx}" y1="963" x2="{lx+26}" y2="963" stroke="#facc15" stroke-width="3"/>')
+text(lx+32, 968, "8 通道（黄）", 13, "#334155")
 
-rect(rx0, ry0+166, 320, 218, "#f5f3ff", 10, "#c4b5fd", 1)
-text(rx0+16, ry0+194, "9 组团（补充培育）", 15, "#6d28d9", "bold")
-groups9 = "呼包鄂榆 · 黔中 · 滇中 · 山西中部\n天山北坡 · 兰西 · 宁夏沿黄 · 拉萨 · 喀什"
-for i, line in enumerate(groups9.split("\n")):
-    text(rx0+16, ry0+224+i*22, line, 13, "#2e1065")
-
-# 右上：道路要素
-rect(rx0+340, ry0-28, 310, 344, "#eff6ff", 10, "#93c5fd", 1)
-text(rx0+356, ry0, "交通骨干要素", 15, "#1d4ed8", "bold")
-els = [("6 轴", "京哈—京港澳 · 陆桥 · 沿江\n沪昆 · 成渝昆 · 广昆", "#3b82f6"),
-       ("7 廊", "绥满 · 京延 · 沿边 · 京藏\n大陆桥 · 川藏 · 广昆走廊", "#f59e0b"),
-       ("8 通道", "额济纳 · 二连 · 满洲里 · 丹东\n沪昆 · 广昆 · 滇藏 · 南北沿边", "#8b5cf6")]
-y = ry0+34
-for name, desc, c in els:
-    add(f'<circle cx="{rx0+366}" cy="{y+6}" r="6" fill="{c}"/>')
-    text(rx0+380, y+10, name, 14, c, "bold")
-    for j, line in enumerate(desc.split("\n")):
-        text(rx0+396, y+30+j*19, line, 11.5, "#334155")
-    y += 86
+text(64, 996, "地图中红点标注四极位置，线条为国家级交通骨干；下方为政策目标口径。", 12.5, "#94a3b8")
 
 # ============ 第 2 区：三层关系链 ============
-rect(24, 602, W-48, 250, "#ffffff", 12, "#e2e8f0", 1)
-text(44, 638, "② 三层关系：337 需求点 ⊃ 19+2 城市群 ⊃ 15 候选仓 ⊃ 9 仓方案", 17, "#0f172a", "bold")
+rect(24, 1040, W-48, 250, "#ffffff", 12, "#e2e8f0", 1)
+text(44, 1076, "② 三层关系：337 需求点 ⊃ 19+2 城市群 ⊃ 15 候选仓 ⊃ 9 仓方案", 17, "#0f172a", "bold")
 
 chain = [
     ("337 需求点", "333 地级行政区 + 4 直辖市\n= 全国地级行政区划全集", "#0ea5e9"),
@@ -91,7 +73,7 @@ chain = [
 bw, bh = 268, 128
 gap = 26
 x0 = (W - (bw*4 + gap*3)) / 2
-y0 = 676
+y0 = 1118
 for i, (t, d, c) in enumerate(chain):
     x = x0 + i*(bw+gap)
     rect(x, y0, bw, bh, c, 12)
@@ -104,10 +86,9 @@ for i, (t, d, c) in enumerate(chain):
 text(W/2, y0+bh+34, "从「全国地图」到「国家骨架」再到「候选据点」，最后模型挑出「最优据点」", 14, "#64748b", "normal", "middle")
 
 # ============ 第 3 区：候选仓映射明细 ============
-rect(24, 882, W-48, 980, "#ffffff", 12, "#e2e8f0", 1)
-text(44, 918, "③ 候选仓映射明细：15 候选仓如何从 19+2 框架中筛出", 17, "#0f172a", "bold")
+rect(24, 1310, W-48, 436, "#ffffff", 12, "#e2e8f0", 1)
+text(44, 1346, "③ 候选仓映射明细：15 候选仓如何从 19+2 框架中筛出", 17, "#0f172a", "bold")
 
-# 三列表
 tables = [
     ("① 4 极（消费主引擎）· 全覆盖", "#ef4444", "#fef2f2", "#991b1b",
      [("京津冀", "北京 · 保定（2仓）"), ("长三角", "无锡"), ("粤港澳大湾区", "广州"), ("成渝双城经济圈", "成都")]),
@@ -119,12 +100,11 @@ tables = [
 ]
 tw = [360, 360, 360]
 tx0 = [48, 424, 800]
-ty0 = 950
+ty0 = 1378
 for k, (title, hc, bg, tc, rows) in enumerate(tables):
     x = tx0[k]; w = tw[k]
     rect(x, ty0, w, 40, hc, 8)
     text(x+w/2, ty0+26, title, 14.5, "#ffffff", "bold", "middle")
-    # 表头
     rect(x, ty0+40, w/2, 30, bg, 0)
     rect(x+w/2, ty0+40, w/2, 30, bg, 0)
     text(x+16, ty0+60, "城市群", 13, tc, "bold")
@@ -156,4 +136,4 @@ add('</svg>')
 
 out = Path("/home/user/Doubao/chats/38448286510269698/supply-chain-network-design/docs/19plus2-framework.svg")
 out.write_text("\n".join(parts), encoding="utf-8")
-print(f"[ok] {out} ({len(parts)} elements)")
+print(f"[ok] {out} ({len(parts)} elements, {out.stat().st_size/1024:.0f} KB)")
