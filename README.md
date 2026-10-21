@@ -125,20 +125,22 @@ supply-chain-network-design/
 ├── README.md                 # 本文件：项目总览
 ├── docs/
 │   ├── methodology.md        # 方法论详解（P-中值、约束、求解）
-│   └── data-dictionary.md    # 数据字典（字段口径说明）
+│   ├── data-dictionary.md    # 数据字典（字段口径说明）
+│   └── 19plus2-framework.svg # 19+2 城市群框架长图（4极8组群9组团+三层关系）
 ├── data/
-│   ├── raw/                  # 原始数据：337 地级市经纬度、城间距离/耗时表（公开数据）
-│   ├── processed/            # 清洗后数据（模型输入）
-│   └── params/               # 参数表：仓储/补货/配送成本、时效目标、容量
+│   ├── raw/                  # 原始数据：337 地级市经纬度、城间距离/耗时表（高德 API + Python 查询获取）
+│   └── processed/            # 清洗后数据（模型输入：demand/candidates/distance_cost/assignment 等 7 张）
 ├── src/
-│   ├── fetch_road_network.py # 高德 API 路网数据获取脚本
+│   ├── fetch_road_network.py # 高德 API 路网数据获取脚本（公开接口，Key 不入库）
 │   ├── pmedian_model.py      # P-中值选址模型（Python 实现）
 │   ├── model_full.py         # ★ 全成本选址模型（仓储+补货+配送，复现 OpenSolver 口径）
 │   ├── sweep_p.py            # ★ 仓数边际比选扫描（P=1..15 成本-时效权衡）
 │   ├── cost_timing_analysis.py  # 成本—时效比选分析
+│   ├── config.py             # 参数常量：仓储/补货/配送成本、时效目标、容量（口径见 data-dictionary）
+│   ├── plot_results.py       # 结果可视化（覆盖图、成本-时效比选图）
 │   └── utils.py              # 公共工具
-├── model/                    # 模型文件（Excel + OpenSolver 对照版）
-├── results/                  # 结果输出：比选表、覆盖图、边际成本曲线
+├── model/                    # 模型说明（Excel + OpenSolver 对照版；源工作簿体积大，不入库）
+├── results/                  # 结果输出：比选表（sweep_p1_15.csv）、覆盖图、边际成本曲线
 └── notebooks/                # 分析笔记本（Jupyter，可选）
 ```
 
@@ -181,7 +183,7 @@ python src/sweep_p.py
 
 ## 🔒 数据与安全说明（Data & Security）
 
-- **数据来源**：行政区经纬度与城间距离/耗时均为**公开数据**（高德开放平台接口），可公开发布。
+- **数据来源**：337 个地级行政区经纬度与城间距离/耗时，通过**高德开放平台 API + Python 批量查询获取**（数据本身为公开可发布），获取脚本见 `src/fetch_road_network.py`。
 - **参数口径**：需求点单量、成本单价、时效目标等模型参数为**研究假设口径**（基于行业公开水平设定），用于方法演示与敏感性分析，不涉及任何真实企业数据。
 - **安全红线**：高德 API Key（密钥）绝不进入仓库：统一通过环境变量读取，`.gitignore` 已排除 `.env` 等密钥文件。
 - **模型口径**：仓储 = 单量 ×（单均固有分摊 + 单均操作费）；补货 = 单量 × 单均重量（0.35 kg/单）× 补货运距单价（元/kg，按距离区间）；配送 = 单量 × 单均快递成本（按城间运距）。与 Excel + OpenSolver 模型完全一致（交叉验证误差 0.014%）。

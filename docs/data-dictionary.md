@@ -1,6 +1,6 @@
 # 数据字典（Data Dictionary）
 
-> 本仓全部使用**公开数据**（行政区经纬度、公开路网距离/耗时），字段口径与 Excel + OpenSolver 模型完全一致。
+> 本仓全部使用**高德开放平台 API + Python 批量查询获取的公开数据**（行政区经纬度、公开路网距离/耗时），字段口径与 Excel + OpenSolver 模型完全一致。
 
 ## 1. 点位数据（`data/raw/cities.csv`）
 
