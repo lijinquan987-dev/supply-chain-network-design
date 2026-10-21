@@ -84,7 +84,7 @@ subject to
 
 **三层关系**：337 需求点（全国地级行政区全集）⊃ 19+2 城市群（4极8组群9组团 = 21 空间单元）⊃ 15 候选仓 ⊃ 9 仓方案——完整框架图见 [docs/19plus2-framework.svg](docs/19plus2-framework.svg)：
 
-![19+2 城市群框架](docs/19plus2-framework.svg)
+![19+2 城市群框架](https://raw.githubusercontent.com/lijinquan987-dev/supply-chain-network-design/main/docs/19plus2-framework.svg?v=2)
 
 ---
 
